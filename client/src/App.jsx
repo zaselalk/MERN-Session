@@ -1,19 +1,32 @@
-import { useState } from "react";
-
-import "./App.css";
-import Images from "./components/Images";
-import Header from "./components/Header";
-import { Card } from "./components/Card";
+import { useEffect, useState } from "react";
+import Form from "./components/Form";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [studentsData, setStudentsData] = useState([]);
+
+  async function getStudents() {
+    const data = await fetch("http://localhost:3000/students");
+    const students = await data.json();
+    setStudentsData(students);
+  }
+
+  useEffect(() => {
+    getStudents();
+  }, []);
 
   return (
-    <>
-      <Images />
-      <Header />
-      <Card count={count} setCount={setCount} />
-    </>
+    <div>
+      <h1>Students</h1>
+      {studentsData.map((student) => {
+        return (
+          <li>
+            {student.name} - {student.age}
+          </li>
+        );
+      })}
+
+      <Form />
+    </div>
   );
 }
 
