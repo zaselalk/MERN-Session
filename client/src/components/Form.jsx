@@ -17,7 +17,7 @@ export default function Form({ onSubmit }) {
 
     const data = await response.json();
     console.log(data);
-    onSubmit();
+    // onSubmit();
   }
   return (
     <div>

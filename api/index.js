@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const { Sequelize } = require('sequelize');
+const databaseCon = require('./db/dbConfig');
+const Student = require('./models/Student');
 
 // middleware for json
 app.use(express.json());
@@ -8,38 +11,42 @@ app.use(express.json());
 //implement cors
 app.use(cors());
 
-const students = [
-    {
-        id: 0,
-        name: "Gihan",
-        age: 13
-    }, {
-        id: 1,
-        name: "John",
-        age: 15
-    }
-]
+// database connection
 
-app.get("/students", (req, res) => {
+databaseCon.sync({
+    alter: true
+})
+
+
+app.get("/students", async (req, res) => {
+    const students = await Student.findAll();
     res.json(students);
 })
 
-app.post("/students", (req, res) => {
+app.post("/students", async (req, res) => {
     const { name, age } = req.body;
-    students.push({ id: students.length, name, age });
+    await Student.create({ name, age });
     res.json({ message: "Student added successfully" });
 });
 
-app.delete("/students/:id", (req, res) => {
+app.delete("/students/:id", async (req, res) => {
     const id = req.params.id;
-    students.splice(id, 1);
+    await Student.destroy({
+        where: {
+            id: id
+        }
+    });
     res.json({ message: "Student deleted " });
 })
 
-app.put("/students/:id", (req, res) => {
+app.put("/students/:id", async (req, res) => {
     const id = req.params.id;
     const { name, age } = req.body;
-    students[id] = { id: parseInt(id), name, age };
+    await Student.update({ name, age }, {
+        where: {
+            id: id
+        }
+    });
     res.json({ message: "Student updated " });
 })
 
