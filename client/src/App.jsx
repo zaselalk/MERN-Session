@@ -1,31 +1,27 @@
 import { useEffect, useState } from "react";
 import Form from "./components/Form";
+import { NavLink, Route, Routes } from "react-router";
+import Student from "./components/Student";
 
 function App() {
-  const [studentsData, setStudentsData] = useState([]);
-
-  async function getStudents() {
-    const data = await fetch("http://localhost:3000/students");
-    const students = await data.json();
-    setStudentsData(students);
-  }
-
-  useEffect(() => {
-    getStudents();
-  }, []);
-
   return (
     <div>
-      <h1>Students</h1>
-      {studentsData.map((student) => {
-        return (
-          <li>
-            {student.name} - {student.age}
-          </li>
-        );
-      })}
+      <h1>Navigation</h1>
+      <ul>
+        <li>
+          <NavLink to="/students">Students</NavLink>
+        </li>
+        <li>
+          <NavLink to="/add">Add Student</NavLink>
+        </li>
+      </ul>
 
-      <Form />
+      {/* <Form onSubmit={getStudents} /> */}
+
+      <Routes>
+        <Route path="/students" element={<Student />} />
+        <Route path="/add" element={<Form />} />
+      </Routes>
     </div>
   );
 }
